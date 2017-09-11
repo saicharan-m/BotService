@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using System.Text.RegularExpressions;
 
 // For more information about this template visit http://aka.ms/azurebots-csharp-basic
 [Serializable]
@@ -29,7 +30,17 @@ public class EchoDialog : IDialog<object>
 
     public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
     {
+        var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
         var message = await argument;
+        if (regX.Match(message.Text.ToUpper()))
+        {
+            PromptDialog.Confirm(
+                context,
+                AfterResetAsync,
+                "Are you sure you want to submit?",
+                "Didn't get that!",
+                promptStyle: PromptStyle.Auto);
+        }
         if (message.Text == "Yes")
         {
             PromptDialog.Confirm(
