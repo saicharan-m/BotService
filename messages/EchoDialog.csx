@@ -41,6 +41,11 @@ public class EchoDialog : IDialog<object>
                 "Didn't get that!",
                 promptStyle: PromptStyle.Auto);
         }
+        else if (message.Text.ToUpper().Contains("No, Submit this"))
+        {
+            await context.PostAsync($"Your time entries are submitted");
+            context.Wait(MessageReceivedAsync);
+        }
         else
         {
             await context.PostAsync($"{this.count++}: You said {message.Text}");
