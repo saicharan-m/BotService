@@ -32,7 +32,7 @@ public class EchoDialog : IDialog<object>
     {
         var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
         var message = await argument;
-        if(regX.Match(message.Text.ToUpper()))
+        if(Regex.IsMatch(message.Text.ToUpper(), @"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*"))
         {
             PromptDialog.Confirm(
                 context,

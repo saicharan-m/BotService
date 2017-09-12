@@ -71,7 +71,6 @@ C:\Users\Sai Charan\Desktop\My Bot service\BotService\messages\bin\Debug\net46\k
 C:\Users\Sai Charan\Desktop\My Bot service\BotService\messages\bin\Debug\net46\ru\System.Spatial.resources.dll
 C:\Users\Sai Charan\Desktop\My Bot service\BotService\messages\bin\Debug\net46\zh-Hans\System.Spatial.resources.dll
 C:\Users\Sai Charan\Desktop\My Bot service\BotService\messages\bin\Debug\net46\zh-Hant\System.Spatial.resources.dll
-C:\Users\Sai Charan\Desktop\My Bot service\BotService\messages\obj\Debug\net46\messages.csprojResolveAssemblyReference.cache
 C:\Users\Sai Charan\Desktop\My Bot service\BotService\messages\obj\Debug\net46\messages.csproj.CoreCompileInputs.cache
 C:\Users\Sai Charan\Desktop\My Bot service\BotService\messages\obj\Debug\net46\messages.AssemblyInfoInputs.cache
 C:\Users\Sai Charan\Desktop\My Bot service\BotService\messages\obj\Debug\net46\messages.AssemblyInfo.cs
