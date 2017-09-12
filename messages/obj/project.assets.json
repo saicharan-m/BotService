@@ -382,7 +382,7 @@
           }
         }
       },
-      "System.Text.RegularExpressions/4.3.0": {
+      "System.Text.RegularExpressions/4.1.0": {
         "type": "package",
         "frameworkAssemblies": [
           "System"
@@ -798,10 +798,10 @@
         "system.spatial.nuspec"
       ]
     },
-    "System.Text.RegularExpressions/4.3.0": {
-      "sha512": "6gdwL92LhvF6yNIPKBo2XwgjTT9ayjb1IstRg506Vi7lgswq6VTZDIr9sGOe/WVKO5lGwYcuGGhEhTo3Y7wPXw==",
+    "System.Text.RegularExpressions/4.1.0": {
+      "sha512": "ViYfiC/6NxUAaoTcfqz/HC3A1vrpHSAMmHv7TzPBNT/K+NUNzGp1B96PoAKrEaICsxH0Rs4TmLfaOpOXStcfdA==",
       "type": "package",
-      "path": "system.text.regularexpressions/4.3.0",
+      "path": "system.text.regularexpressions/4.1.0",
       "files": [
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
@@ -834,7 +834,6 @@
         "ref/netcore50/ru/System.Text.RegularExpressions.xml",
         "ref/netcore50/zh-hans/System.Text.RegularExpressions.xml",
         "ref/netcore50/zh-hant/System.Text.RegularExpressions.xml",
-        "ref/netcoreapp1.1/System.Text.RegularExpressions.dll",
         "ref/netstandard1.0/System.Text.RegularExpressions.dll",
         "ref/netstandard1.0/System.Text.RegularExpressions.xml",
         "ref/netstandard1.0/de/System.Text.RegularExpressions.xml",
@@ -876,7 +875,7 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._",
-        "system.text.regularexpressions.4.3.0.nupkg.sha512",
+        "system.text.regularexpressions.4.1.0.nupkg.sha512",
         "system.text.regularexpressions.nuspec"
       ]
     },
@@ -904,7 +903,7 @@
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.6": [
       "Microsoft.Bot.Builder.Azure >= 3.2.3",
-      "System.Text.RegularExpressions >= 4.3.0"
+      "System.Text.RegularExpressions >= 4.1.0"
     ]
   },
   "packageFolders": {
@@ -957,7 +956,7 @@
           },
           "System.Text.RegularExpressions": {
             "target": "Package",
-            "version": "4.3.0"
+            "version": "4.1.0"
           }
         }
       }

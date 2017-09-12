@@ -32,7 +32,7 @@ public class EchoDialog : IDialog<object>
     public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
     {
         //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
-        Regex.IsMatch(message.Text.ToUpper(), @"R-[0-9]{10}-[0-9]{6}-[0-9]{2}.*")
+        
         var message = await argument;
         if(message.Text.ToUpper().Contains("HI"))
         {
@@ -57,7 +57,7 @@ public class EchoDialog : IDialog<object>
             await context.PostAsync($"Please specify your time entries in valid format(Submit WBS hour perday with space between each day)");
             context.Wait(MessageReceivedAsync);
         }
-        else if (message.Text.ToUpper().Contains("SUBMIT"))
+        else if (Regex.IsMatch(message.Text.ToUpper(), @"R-[0-9]{10}-[0-9]{6}-[0-9]{2}.*"))
         {
             await context.PostAsync($"Your time entries are submitted");
             previousMessage = string.Empty;
