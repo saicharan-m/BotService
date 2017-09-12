@@ -52,6 +52,11 @@ public class EchoDialog : IDialog<object>
             previousMessage = string.Empty;
             context.Wait(MessageReceivedAsync);
         }
+        else if(message.Text.ToUpper() == "NO" && previousMessage == "HI")
+        {
+            await context.PostAsync($"Please specify your time entries in valid format(Submit WBS hour perday with space between each day)");
+            context.Wait(MessageReceivedAsync);
+        }
         else if (message.Text.ToUpper().Contains("SUBMIT"))
         {
             await context.PostAsync($"Your time entries are submitted");
