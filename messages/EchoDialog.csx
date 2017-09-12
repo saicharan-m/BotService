@@ -38,16 +38,16 @@ public class EchoDialog : IDialog<object>
             PromptDialog.Confirm(
                 context,
                 AfterResetAsync,
-                "Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9",
-                "Didn't get that!",
+                $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9",
+                $"Didn't get that!",
                 promptStyle: PromptStyle.Auto);
         }
-        else if (message.Text.ToUpper() == "YES")
-        {
-            await context.PostAsync($"Your time entries are submitted");
-            context.Wait(MessageReceivedAsync);
-        }
-        else if (message.Text.ToUpper().Contains("NO") || message.Text.ToUpper().Contains("SUBMIT"))
+        //else if (message.Text.ToUpper() == "YES")
+        //{
+        //    await context.PostAsync($"Your time entries are submitted");
+        //    context.Wait(MessageReceivedAsync);
+        //}
+        else if (message.Text.ToUpper().Contains("SUBMIT"))
         {
             await context.PostAsync($"Your time entries are submitted");
             context.Wait(MessageReceivedAsync);
@@ -69,7 +69,7 @@ public class EchoDialog : IDialog<object>
         }
         else
         {
-            await context.PostAsync("");
+            await context.PostAsync($"Please specify your time entries in valid format(Submit WBS hour perday with space between each day)");
         }
         context.Wait(MessageReceivedAsync);
     }
