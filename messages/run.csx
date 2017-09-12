@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Builder.ConnectorEx;
 
 // Bot Storage: Register the optional private state storage for your bot. 
 
