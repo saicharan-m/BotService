@@ -2,7 +2,7 @@
     
 using System;
 using System.Threading.Tasks;
-using System.Text.RegularExpression;
+using System.Text.RegularExpressions;
 
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
@@ -12,6 +12,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 // For more information about this template visit http://aka.ms/azurebots-csharp-basic
@@ -46,11 +47,11 @@ public class EchoDialog : IDialog<object>
         var message = await argument;
         if(message.Text.ToUpper().Contains("INTIATE FILLING"))
         {
-            IEventActivity triggerEvent = activity;
-            var message = JsonConvert.DeserializeObject<Message>(((JObject)triggerEvent.Value).GetValue("Message").ToString());
-            var messageactivity = (Activity)message.RelatesTo.GetPostToBotMessage();
+            IEventActivity triggerEvent = context.Activity;
+            var tMessage = JsonConvert.DeserializeObject<Message>(((JObject)triggerEvent.Value).GetValue("Message").ToString());
+            var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
 
-            client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
+            var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
             var triggerReply = messageactivity.CreateReply();
             triggerReply.Text = $"trigger! {message.Text}";
             await client.Conversations.ReplyToActivityAsync(triggerReply);

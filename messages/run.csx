@@ -51,7 +51,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
                 case ActivityTypes.ConversationUpdate:
                     var client = new ConnectorClient(new Uri(activity.ServiceUrl));
                     IConversationUpdateActivity update = activity;
-                    log.Info(activity.ToConversationReference().User);
+                    log.Info(activity.ToConversationReference().User.Id);
                     if (update.MembersAdded.Any())
                     {
                         var reply = activity.CreateReply();
