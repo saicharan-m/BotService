@@ -61,7 +61,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
                             {
                                 reply.Text += $" {newMember.Name}";
                             }
-                            reply.Text += "! Do you want me to submit your Timesheet R-0056915605-004510-01 8 8 0 0 8";
+                            //reply.Text += "! Do you want me to submit your Timesheet R-0056915605-004510-01 8 8 0 0 8";
                             await client.Conversations.ReplyToActivityAsync(reply);
                         }
                     }

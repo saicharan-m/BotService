@@ -30,9 +30,10 @@ public class EchoDialog : IDialog<object>
 
     public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
     {
-        var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
+        //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
+        //Regex.IsMatch(message.Text.ToUpper(), @"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*")
         var message = await argument;
-        if(Regex.IsMatch(message.Text.ToUpper(), @"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*"))
+        if(message.Text)
         {
             PromptDialog.Confirm(
                 context,
