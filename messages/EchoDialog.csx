@@ -30,25 +30,30 @@ public class EchoDialog : IDialog<object>
 
     public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
     {
-        //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
+        var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
         var message = await argument;
-        if (message.Text == "Yes")
+        if(regX.Match(message.Text.ToUpper()))
         {
             PromptDialog.Confirm(
                 context,
                 AfterResetAsync,
-                "Are you sure you want to submit?",
+                "Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9",
                 "Didn't get that!",
                 promptStyle: PromptStyle.Auto);
         }
-        else if (message.Text.ToUpper().Contains("No, Submit this"))
+        if (message.Text.ToUpper() == "YES")
+        {
+            await context.PostAsync($"Your time entries are submitted");
+            context.Wait(MessageReceivedAsync);
+        }
+        else if (message.Text.ToUpper().Contains("NO") || message.Text.ToUpper().Contains("SUBMIT"))
         {
             await context.PostAsync($"Your time entries are submitted");
             context.Wait(MessageReceivedAsync);
         }
         else
         {
-            await context.PostAsync($"{this.count++}: You said {message.Text}");
+            await context.PostAsync($"{message.Text} is not recognised format. Please enter timesheets in valid format.");
             context.Wait(MessageReceivedAsync);
         }
     }
@@ -59,11 +64,11 @@ public class EchoDialog : IDialog<object>
         if (confirm)
         {
             this.count = 1;
-            await context.PostAsync("Reset count.");
+            await context.PostAsync($"Your time entries are submitted");
         }
         else
         {
-            await context.PostAsync("Did not reset count.");
+            await context.PostAsync("");
         }
         context.Wait(MessageReceivedAsync);
     }
