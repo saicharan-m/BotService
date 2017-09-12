@@ -1,3 +1,4 @@
+#load "Message.csx"
 using System;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
@@ -34,17 +35,39 @@ public class EchoDialog : IDialog<object>
         //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
         
         var message = await argument;
-        if(message.Text.ToUpper().Contains("HI"))
+        if(message.Text.ToUpper().Contains("INTIATE FILLING"))
+        {
+            IEventActivity triggerEvent = activity;
+            var message = JsonConvert.DeserializeObject<Message>(((JObject)triggerEvent.Value).GetValue("Message").ToString());
+            var messageactivity = (Activity)message.RelatesTo.GetPostToBotMessage();
+
+            client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
+            var triggerReply = messageactivity.CreateReply();
+            triggerReply.Text = $"trigger! {message.Text}";
+            await client.Conversations.ReplyToActivityAsync(triggerReply);
+        }
+        else if(message.Text.ToUpper().Contains("HI"))
         {
             previousMessage = "HI";
-            await context.PostAsync($"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9") ;
-            context.Wait(MessageReceivedAsync);
             //PromptDialog.Confirm(
             //    context,
             //    AfterResetAsync,
             //    $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9",
             //    $"Didn't get that!",
             //    promptStyle: PromptStyle.Auto);
+            // Create a queue Message
+            var queueMessage = new Message
+            {
+                RelatesTo = context.Activity.ToConversationReference(),
+                Text = $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9"
+            };
+
+            // write the queue Message to the queue
+            await AddMessageToQueueAsync(JsonConvert.SerializeObject(queueMessage));
+
+            //await context.PostAsync($"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9");
+            await context.PostAsync($"Your subscription is saved");
+            context.Wait(MessageReceivedAsync);
         }
         else if (message.Text.ToUpper() == "YES" && previousMessage == "HI")
         {
@@ -83,5 +106,24 @@ public class EchoDialog : IDialog<object>
             await context.PostAsync($"Please specify your time entries in valid format(Submit WBS hour perday with space between each day)");
         }
         context.Wait(MessageReceivedAsync);
+    }
+
+    public static async Task AddMessageToQueueAsync(string message)
+    {
+        // Retrieve storage account from connection string.
+        var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
+
+        // Create the queue client.
+        var queueClient = storageAccount.CreateCloudQueueClient();
+
+        // Retrieve a reference to a queue.
+        var queue = queueClient.GetQueueReference("bot-queue");
+
+        // Create the queue if it doesn't already exist.
+        await queue.CreateIfNotExistsAsync();
+
+        // Create a message and add it to the queue.
+        var queuemessage = new CloudQueueMessage(message);
+        await queue.AddMessageAsync(queuemessage);
     }
 }

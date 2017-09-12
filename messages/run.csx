@@ -24,7 +24,6 @@ using Microsoft.Bot.Connector;
 public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 {
     log.Info($"Webhook was triggered!");
-
     // Initialize the azure bot
     using (BotService.Initialize())
     {
@@ -50,6 +49,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
                 case ActivityTypes.ConversationUpdate:
                     var client = new ConnectorClient(new Uri(activity.ServiceUrl));
                     IConversationUpdateActivity update = activity;
+                    log.Info(activity.ToConversationReference().User);
                     if (update.MembersAdded.Any())
                     {
                         var reply = activity.CreateReply();
