@@ -125,7 +125,7 @@ public class EchoDialog : IDialog<object>
         var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
         // Create the queue client.
-        var queueClient = storageAccount.CreateCloudBlobClient();
+        var queueClient = storageAccount.CreateCloudQueueClient();
 
         // Retrieve a reference to a queue.
         var queue = queueClient.GetQueueReference("bot-queue");
