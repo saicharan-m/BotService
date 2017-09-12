@@ -1,9 +1,17 @@
 #load "Message.csx"
+    
 using System;
 using System.Threading.Tasks;
+using System.Text.RegularExpression;
+
+using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
-using System.Text.RegularExpressions;
+using Microsoft.Bot.Builder.ConnectorEx;
+using Microsoft.WindowsAzure.Storage; 
+using Microsoft.WindowsAzure.Storage.Queue; 
+using Newtonsoft.Json;
+
 
 // For more information about this template visit http://aka.ms/azurebots-csharp-basic
 [Serializable]
