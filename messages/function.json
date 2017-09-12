@@ -10,19 +10,6 @@
       "type": "http",
       "direction": "out",
       "name": "res"
-    },
-    {
-      "name": "myQueueItem",
-      "type": "queueTrigger",
-      "direction": "in",
-      "queueName": "bot-queue",
-      "connection": ""
-    },
-    {
-      "type": "bot",
-      "name": "$return",
-      "direction": "out",
-      "botId": "SaiTimesheet"
     }
   ],
   "disabled": false
