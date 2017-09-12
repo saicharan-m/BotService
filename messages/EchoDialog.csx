@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 public class EchoDialog : IDialog<object>
 {
     protected int count = 1;
+    protected string previousMessage = string.Empty;
 
     public Task StartAsync(IDialogContext context)
     {
@@ -35,26 +36,31 @@ public class EchoDialog : IDialog<object>
         var message = await argument;
         if(message.Text.ToUpper().Contains("HI"))
         {
-            PromptDialog.Confirm(
-                context,
-                AfterResetAsync,
-                $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9",
-                $"Didn't get that!",
-                promptStyle: PromptStyle.Auto);
+            previousMessage = "HI";
+            await context.PostAsync($"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9") ;
+            context.Wait(MessageReceivedAsync);
+            //PromptDialog.Confirm(
+            //    context,
+            //    AfterResetAsync,
+            //    $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9",
+            //    $"Didn't get that!",
+            //    promptStyle: PromptStyle.Auto);
         }
-        //else if (message.Text.ToUpper() == "YES")
-        //{
-        //    await context.PostAsync($"Your time entries are submitted");
-        //    context.Wait(MessageReceivedAsync);
-        //}
+        else if (message.Text.ToUpper() == "YES" && previousMessage == "HI")
+        {
+            await context.PostAsync($"Your time entries are submitted");
+            previousMessage = string.Empty;
+            context.Wait(MessageReceivedAsync);
+        }
         else if (message.Text.ToUpper().Contains("SUBMIT"))
         {
             await context.PostAsync($"Your time entries are submitted");
+            previousMessage = string.Empty;
             context.Wait(MessageReceivedAsync);
         }
         else
         {
-            await context.PostAsync($"{message.Text} is not recognised format. Please enter timesheets in valid format.");
+            await context.PostAsync($"{message.Text} is not recognised format. Please enter valid message.");
             context.Wait(MessageReceivedAsync);
         }
     }
