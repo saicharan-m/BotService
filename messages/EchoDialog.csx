@@ -47,7 +47,7 @@ public class EchoDialog : IDialog<object>
         var message = await argument;
         if(message.Text.ToUpper().Contains("INTIATE FILLING"))
         {
-            IEventActivity triggerEvent = context.Activity;
+            IActivity triggerEvent = context.Activity;
             var tMessage = JsonConvert.DeserializeObject<Message>(((JObject)triggerEvent.Value).GetValue("Message").ToString());
             var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
 
