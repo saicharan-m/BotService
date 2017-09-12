@@ -9,7 +9,8 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.WindowsAzure.Storage; 
-using Microsoft.WindowsAzure.Storage.Queue; 
+using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 
 
