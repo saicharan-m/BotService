@@ -46,12 +46,13 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
             switch (activity.GetActivityType())
             {
                 case ActivityTypes.Message:
+                    log.Info(activity.ToConversationReference().User.Id);
                     await Conversation.SendAsync(activity, () => new EchoDialog());
                     break;
                 case ActivityTypes.ConversationUpdate:
                     var client = new ConnectorClient(new Uri(activity.ServiceUrl));
                     IConversationUpdateActivity update = activity;
-                    log.Info(activity.ToConversationReference().User.Id);
+
                     if (update.MembersAdded.Any())
                     {
                         var reply = activity.CreateReply();
