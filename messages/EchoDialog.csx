@@ -42,7 +42,7 @@ public class EchoDialog : IDialog<object>
                 "Didn't get that!",
                 promptStyle: PromptStyle.Auto);
         }
-        if (message.Text.ToUpper() == "YES")
+        else if (message.Text.ToUpper() == "YES")
         {
             await context.PostAsync($"Your time entries are submitted");
             context.Wait(MessageReceivedAsync);
