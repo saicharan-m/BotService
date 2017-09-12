@@ -916,11 +916,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\Sai Charan\\Desktop\\My Bot service\\BotService\\messages\\messages.csproj",
+      "projectUniqueName": "C:\\Users\\Sai Charan\\Desktop\\My projects\\messages\\messages.csproj",
       "projectName": "messages",
-      "projectPath": "C:\\Users\\Sai Charan\\Desktop\\My Bot service\\BotService\\messages\\messages.csproj",
+      "projectPath": "C:\\Users\\Sai Charan\\Desktop\\My projects\\messages\\messages.csproj",
       "packagesPath": "C:\\Users\\Sai Charan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Sai Charan\\Desktop\\My Bot service\\BotService\\messages\\obj\\",
+      "outputPath": "C:\\Users\\Sai Charan\\Desktop\\My projects\\messages\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
