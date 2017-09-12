@@ -10,6 +10,7 @@ using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.ConnectorEx;
+using Microsoft.Azure.WebJobs.Host;
 
 // Bot Storage: Register the optional private state storage for your bot. 
 
