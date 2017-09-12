@@ -45,18 +45,19 @@ public class EchoDialog : IDialog<object>
         //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
         
         var message = await argument;
-        if(message.Text.ToUpper().Contains("INTIATE FILLING"))
-        {
+        //if(message.Text.ToUpper().Contains("INTIATE FILLING"))
+        //{
             IActivity triggerEvent = context.Activity;
-            var tMessage = JsonConvert.DeserializeObject<Message>(((JObject)triggerEvent.Value).GetValue("Message").ToString());
-            var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
+            //var tMessage = JsonConvert.DeserializeObject<Message>(((JObject)triggerEvent.Value).GetValue("Message").ToString());
+            //var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
 
-            var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
-            var triggerReply = messageactivity.CreateReply();
-            triggerReply.Text = $"trigger! {message.Text}";
-            await client.Conversations.ReplyToActivityAsync(triggerReply);
-        }
-        else if(message.Text.ToUpper().Contains("HI"))
+            //var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
+            //var triggerReply = messageactivity.CreateReply();
+            //triggerReply.Text = $"trigger! {message.Text}";
+            //await client.Conversations.ReplyToActivityAsync(triggerReply);
+        //}
+        //else 
+        if(message.Text.ToUpper().Contains("HI"))
         {
             previousMessage = "HI";
             //PromptDialog.Confirm(
@@ -124,7 +125,7 @@ public class EchoDialog : IDialog<object>
         var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
         // Create the queue client.
-        var queueClient = storageAccount.CreateCloudQueueClient();
+        var queueClient = storageAccount.CreateCloudBlobClient();
 
         // Retrieve a reference to a queue.
         var queue = queueClient.GetQueueReference("bot-queue");
@@ -136,4 +137,7 @@ public class EchoDialog : IDialog<object>
         var queuemessage = new CloudQueueMessage(message);
         await queue.AddMessageAsync(queuemessage);
     }
+
+   
+
 }
