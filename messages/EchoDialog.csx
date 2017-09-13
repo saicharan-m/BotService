@@ -10,7 +10,6 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.WindowsAzure.Storage; 
 using Microsoft.WindowsAzure.Storage.Queue;
-using Microsoft.Framework.Configuration;
 using Microsoft.WindowsAzure.Storage.Table;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
@@ -68,7 +67,7 @@ public class EchoDialog : IDialog<object>
         //else 
         if (message.Text.ToUpper().Contains("HI"))
         {
-            previousMessage = "HI";
+            //previousMessage = "HI";
             //PromptDialog.Confirm(
             //    context,
             //    AfterResetAsync,
@@ -92,7 +91,6 @@ public class EchoDialog : IDialog<object>
         else if (message.Text.ToUpper() == "YES")
         {
             await context.PostAsync($"Your time entries are submitted");
-            previousMessage = string.Empty;
             context.Wait(MessageReceivedAsync);
         }
         else if(message.Text.ToUpper() == "NO")
@@ -164,7 +162,7 @@ public class EchoDialog : IDialog<object>
         TableOperation insertOperation = TableOperation.Insert(myMessageTableEntity);
 
         // Execute the insert operation.
-        await peopleTable.ExecuteAsync(insertOperation);
+        await messageTable.ExecuteAsync(insertOperation);
     }
 
 
