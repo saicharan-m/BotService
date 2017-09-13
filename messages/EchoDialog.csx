@@ -83,6 +83,7 @@ public class EchoDialog : IDialog<object>
         }
         else if (message.Text.ToUpper().Contains("HI"))
         {
+        await context.PostAsync($"Yo Yo!");
             //previousMessage = "HI";
             //PromptDialog.Confirm(
             //    context,
@@ -96,6 +97,7 @@ public class EchoDialog : IDialog<object>
                 RelatesTo = context.Activity.ToConversationReference(),
                 Text = $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9"
             };
+            await context.PostAsync($"Oops");
             var tableMessage = new MessageString(Guid.NewGuid().ToString());
 
             tableMessage.SerializedMessage = JsonConvert.SerializeObject(queueMessage);
