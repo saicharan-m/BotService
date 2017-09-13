@@ -80,7 +80,7 @@ public class EchoDialog : IDialog<object>
                 RelatesTo = context.Activity.ToConversationReference(),
                 Text = $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9"
             };
-            var tableMessage = new MessageString(count++);
+            var tableMessage = new MessageString((count++).ToString());
 
             tableMessage.SerializedMessage = JsonConvert.SerializeObject(queueMessage);
             tableMessage.IsActive = "Y";
