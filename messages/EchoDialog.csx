@@ -46,7 +46,7 @@ public class EchoDialog : IDialog<object>
         //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
 
         var message = await argument;
-        if (message.Text.ToUpper().Contains("INTIATE FILLING"))
+        if (message.Text.ToUpper().Contains("INITIATE FILLING"))
         {
             // Retrieve storage account from connection string.
             var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));

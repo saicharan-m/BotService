@@ -46,7 +46,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
             switch (activity.GetActivityType())
             {
                 case ActivityTypes.Message:
-                    log.Info(activity.ToConversationReference().User.Id);
+                    log.Info(JsonConvert.SerializeObject(activity.ToConversationReference()));
                     await Conversation.SendAsync(activity, () => new EchoDialog());
                     break;
                 case ActivityTypes.ConversationUpdate:
