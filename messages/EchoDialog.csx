@@ -75,7 +75,7 @@ public class EchoDialog : IDialog<object>
 
                     var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
                     var triggerReply = messageactivity.CreateReply();
-                    triggerReply.Text = $"trigger! {tMessage.Text}";
+                    triggerReply.Text = $"{tMessage.Text}";
                     await client.Conversations.ReplyToActivityAsync(triggerReply);
                 }
             } while (token != null);
