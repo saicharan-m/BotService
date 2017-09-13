@@ -106,13 +106,12 @@ public class EchoDialog : IDialog<object>
             {
                 await AddMessageToTableAsync(tableMessage);
                 await context.PostAsync($"Your subscription is saved");
-                context.Wait(MessageReceivedAsync);
             }
             catch(Exception error)
             {
                 await context.PostAsync($"Your have subscribed already");
             }
-
+            context.Wait(MessageReceivedAsync);
             //await context.PostAsync($"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9");
 
         }
