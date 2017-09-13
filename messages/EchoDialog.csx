@@ -21,7 +21,7 @@ using Newtonsoft.Json.Linq;
 public class EchoDialog : IDialog<object>
 {
     protected int count = 1;
-    //protected string previousMessage = string.Empty;
+    private string ADMIN_USER_ID = $"29:1W-wNIQJyoFA5Nz6WBAojU5zpceYHsB96f8Kar20Ul6k";
 
     public Task StartAsync(IDialogContext context)
     {
@@ -43,10 +43,8 @@ public class EchoDialog : IDialog<object>
 
     public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
     {
-        //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
-
         var message = await argument;
-        if (message.Text.ToUpper().Contains("INITIATE FILLING"))
+        if (message.Text.ToUpper().Contains("INITIATE FILLING") && context.Activity.ToConversationReference().User.Id == ADMIN_USER_ID)
         {
             // Retrieve storage account from connection string.
             var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
@@ -56,7 +54,7 @@ public class EchoDialog : IDialog<object>
 
             // Retrieve a reference to a table.
             CloudTable messageTable = tableClient.GetTableReference("messageTable");
-            // Construct the query operation for all customer entities where PartitionKey="Smith".
+            // Construct the query operation for all users entities where PartitionKey="Smith".
             TableQuery<MessageString> query = new TableQuery<MessageString>()
                 .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "malineni"));
 
@@ -83,14 +81,6 @@ public class EchoDialog : IDialog<object>
         }
         else if (message.Text.ToUpper().Contains("HI"))
         {
-            //previousMessage = "HI";
-            //PromptDialog.Confirm(
-            //    context,
-            //    AfterResetAsync,
-            //    $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9",
-            //    $"Didn't get that!",
-            //    promptStyle: PromptStyle.Auto);
-            // Create a queue Message
             var queueMessage = new Message
             {
                 RelatesTo = context.Activity.ToConversationReference(),
@@ -99,22 +89,19 @@ public class EchoDialog : IDialog<object>
             var tableMessage = new MessageString(context.Activity.ToConversationReference().User.Id);
 
             tableMessage.SerializedMessage = JsonConvert.SerializeObject(queueMessage);
-            tableMessage.IsActive = "Y";
-            // write the queue Message to the queue
-            //await AddMessageToQueueAsync(JsonConvert.SerializeObject(queueMessage));
+            tableMessage.IsActive = "Y";           
             try
             {
+                //rite the message to table
                 await AddMessageToTableAsync(tableMessage);
                 await context.PostAsync($"Your subscription is saved");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await context.PostAsync($"Your have subscribed already");
             }
 
             context.Wait(MessageReceivedAsync);
-            //await context.PostAsync($"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9");
-
         }
         else if (message.Text.ToUpper() == "YES")
         {
@@ -174,59 +161,22 @@ public class EchoDialog : IDialog<object>
 
     public static async Task AddMessageToTableAsync(MessageString myMessageTableEntity)
     {
-            // Retrieve storage account from connection string.
-            var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
+        // Retrieve storage account from connection string.
+        var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
-            // Create the table client.
-            var tableClient = storageAccount.CreateCloudTableClient();
+        // Create the table client.
+        var tableClient = storageAccount.CreateCloudTableClient();
 
-            // Retrieve a reference to a table.
-            CloudTable messageTable = tableClient.GetTableReference("messageTable");
+        // Retrieve a reference to a table.
+        CloudTable messageTable = tableClient.GetTableReference("messageTable");
 
-            // Create the queue if it doesn't already exist.
-            await messageTable.CreateIfNotExistsAsync();
+        // Create the queue if it doesn't already exist.
+        await messageTable.CreateIfNotExistsAsync();
 
-            // Create a insert query
-            TableOperation insertOperation = TableOperation.Insert(myMessageTableEntity);
+        // Create a insert query
+        TableOperation insertOperation = TableOperation.Insert(myMessageTableEntity);
 
-            // Execute the insert operation.
-            await messageTable.ExecuteAsync(insertOperation);
-        }
-
-
-    //public static async Task RetriveFromTableAsync(IDialogContext context)
-    //{
-    //    // Retrieve storage account from connection string.
-    //    var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
-
-        //    // Create the table client.
-        //    var tableClient = storageAccount.CreateCloudTableClient();
-
-        //    // Retrieve a reference to a table.
-        //    CloudTable messageTable = tableClient.GetTableReference("messageTable");
-        //    // Construct the query operation for all customer entities where PartitionKey="Smith".
-        //    TableQuery<MessageString> query = new TableQuery<MessageString>()
-        //        .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "malineni"));
-
-        //    // Print the fields for each customer.
-        //    TableContinuationToken token = null;
-        //    do
-        //    {
-        //        TableQuerySegment<MessageString> resultSegment = await messageTable.ExecuteQuerySegmentedAsync(query, token);
-        //        token = resultSegment.ContinuationToken;
-
-        //        foreach (MessageString entity in resultSegment.Results)
-        //        {
-        //            IActivity triggerEvent = context.Activity;
-        //            var tMessage = JsonConvert.DeserializeObject<Message>(entity.SerializedMessage);
-        //            var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
-
-        //            var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
-        //            var triggerReply = messageactivity.CreateReply();
-        //            triggerReply.Text = $"trigger! {message.Text}";
-        //            await client.Conversations.ReplyToActivityAsync(triggerReply);
-        //        }
-        //    } while (token != null);
-
-        //}
+        // Execute the insert operation.
+        await messageTable.ExecuteAsync(insertOperation);
     }
+}
