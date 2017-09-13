@@ -108,7 +108,7 @@ public class EchoDialog : IDialog<object>
                 await context.PostAsync($"Your subscription is saved");
                 context.Wait(MessageReceivedAsync);
             }
-            catch
+            catch(Exception error)
             {
                 await context.PostAsync($"Your have subscribed already");
             }
