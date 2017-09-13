@@ -102,7 +102,15 @@ public class EchoDialog : IDialog<object>
             tableMessage.IsActive = "Y";
             // write the queue Message to the queue
             //await AddMessageToQueueAsync(JsonConvert.SerializeObject(queueMessage));
-            await AddMessageToTableAsync(tableMessage);
+            try
+            {
+                await AddMessageToTableAsync(tableMessage);
+            }
+            catch
+            {
+                await context.PostAsync($"Your have subscribed already");
+            }
+
             //await context.PostAsync($"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9");
             await context.PostAsync($"Your subscription is saved");
             context.Wait(MessageReceivedAsync);
@@ -165,6 +173,7 @@ public class EchoDialog : IDialog<object>
 
     public static async Task AddMessageToTableAsync(MessageString myMessageTableEntity)
     {
+        try { 
         // Retrieve storage account from connection string.
         var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
