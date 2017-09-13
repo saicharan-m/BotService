@@ -23,3 +23,19 @@ public class MessageString:TableEntity
     }
     public MessageString() { }
 }
+
+public class TimesheetEntity : TableEntity
+{
+    public string WBS { get; set; }
+    public int Day1 { get; set; }
+    public int Day2 { get; set; }
+    public int Day3 { get; set; }
+    public int Day4 { get; set; }
+    public int Day5 { get; set; }
+    public TimesheetEntity(string key)
+    {
+        this.PartitionKey = "timesheet";
+        this.RowKey = key;
+    }
+    public TimesheetEntity() { }
+}

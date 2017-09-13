@@ -22,7 +22,7 @@ public class EchoDialog : IDialog<object>
 {
     protected int count = 1;
     private string ADMIN_USER_ID = $"29:1W-wNIQJyoFA5Nz6WBAojU5zpceYHsB96f8Kar20Ul6k";
-
+    var previousmessage = string.Empty;
     public Task StartAsync(IDialogContext context)
     {
         try
@@ -113,6 +113,7 @@ public class EchoDialog : IDialog<object>
         }
         else if (message.Text.ToUpper() == "YES")
         {
+            await AddTimeSheetToTableAsync($"R-0034567895-000010-01 9 9 9 9 9", context.Activity.ToConversationReference().User.Id);
             await context.PostAsync($"Your time entries are submitted");
             context.Wait(MessageReceivedAsync);
         }
@@ -123,6 +124,7 @@ public class EchoDialog : IDialog<object>
         }
         else if (Regex.IsMatch(message.Text.ToUpper(), @"R-[0-9]{10}-[0-9]{6}-[0-9]{2}\s[0-9]\s[0-9]\s[0-9]\s[0-9]\s[0-9]"))
         {
+            await AddTimeSheetToTableAsync(message.Text, context.Activity.ToConversationReference().User.Id);
             await context.PostAsync($"Your time entries are submitted");
             context.Wait(MessageReceivedAsync);
         }
@@ -187,4 +189,35 @@ public class EchoDialog : IDialog<object>
         // Execute the insert operation.
         await messageTable.ExecuteAsync(insertOperation);
     }
+
+    public static async Task AddTimeSheetToTableAsync(string message, string userId )
+    {
+        var mytrsTableEntity = new TimesheetEntity(userId);
+        mytrsTableEntity.WBS = message.Substring(0, 22);
+        var dayHoursString = message.Substring(21);
+        var daysHours = dayHoursString.Split(' ');
+        mytrsTableEntity.Day1 = Convert.ToInt32(daysHours[0]);
+        mytrsTableEntity.Day2 = Convert.ToInt32(daysHours[1]);
+        mytrsTableEntity.Day3 = Convert.ToInt32(daysHours[2]);
+        mytrsTableEntity.Day4 = Convert.ToInt32(daysHours[3]);
+        mytrsTableEntity.Day5 = Convert.ToInt32(daysHours[4]);
+        // Retrieve storage account from connection string.
+        var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
+
+        // Create the table client.
+        var tableClient = storageAccount.CreateCloudTableClient();
+
+        // Retrieve a reference to a table.
+        CloudTable trsTable = tableClient.GetTableReference("TimesheetEntityTbl");
+
+        // Create the queue if it doesn't already exist.
+        await trsTable.CreateIfNotExistsAsync();
+
+        // Create a insert query
+        TableOperation insertOperation = TableOperation.Insert(myMessageTableEntity);
+
+        // Execute the insert operation.
+        await trsTable.ExecuteAsync(insertOperation);
+    }
+
 }
