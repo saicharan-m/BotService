@@ -216,6 +216,7 @@ public class EchoDialog : IDialog<object>
         // Create the queue if it doesn't already exist.
         await trsTable.CreateIfNotExistsAsync();
 
+        var dt = DateTime.UtcNow;
         DateTime Firstday = dt.AddDays(-(int)dt.DayOfWeek);
         DateTime Endaday = Firstday.AddDays(6);
 
@@ -224,7 +225,7 @@ public class EchoDialog : IDialog<object>
         TableOperation retrieveOperation = TableOperation.Retrieve<TimesheetEntity>(Endaday.ToShortDateString(), userId);
 
         // Execute the retrieve operation.
-        TableResult retrievedResult = await peopleTable.ExecuteAsync(retrieveOperation);
+        TableResult retrievedResult = await trsTable.ExecuteAsync(retrieveOperation);
 
         // Print the phone number of the result.
         if (retrievedResult.Result != null)
