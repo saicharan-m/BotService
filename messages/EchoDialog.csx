@@ -217,8 +217,8 @@ public class EchoDialog : IDialog<object>
         await trsTable.CreateIfNotExistsAsync();
 
         var dt = DateTime.UtcNow;
-        DateTime Firstday = dt.AddDays(-(int)dt.DayOfWeek);
-        DateTime Endaday = Firstday.AddDays(6);
+        //DateTime Firstday = dt.AddDays(-(int)dt.DayOfWeek);
+        //DateTime Endaday = Firstday.AddDays(6);
 
         // Geting entry from table
 
@@ -251,7 +251,7 @@ public class EchoDialog : IDialog<object>
         //}
         //else
         //{
-        var mytrsTableEntity = new TimesheetEntity(userId, Endaday.ToShortDateString());
+        var mytrsTableEntity = new TimesheetEntity(userId, dt.ToShortDateString());
         mytrsTableEntity.WBS = message.Substring(0, 22);
         var dayHoursString = message.Substring(22);
         var daysHours = dayHoursString.Split(' ');
