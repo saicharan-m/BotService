@@ -16,4 +16,8 @@ public class MessageString:TableEntity
 {
     public string SerializedMessage { get; set; }
     public string IsActive { get; set; }
+    public MessageString(int key)
+    {
+        this.RowKey = key;
+    }
 }

@@ -1,5 +1,5 @@
 #load "Message.csx"
-    
+
 using System;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
@@ -8,7 +8,7 @@ using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.ConnectorEx;
-using Microsoft.WindowsAzure.Storage; 
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Microsoft.Azure.WebJobs.Host;
@@ -44,7 +44,7 @@ public class EchoDialog : IDialog<object>
     public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
     {
         //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
-        
+
         var message = await argument;
         //if (message.Text.ToUpper().Contains("INTIATE FILLING"))
         //{
@@ -55,7 +55,7 @@ public class EchoDialog : IDialog<object>
 
         //    // Retrieve a reference to a queue.
         //    var queue = queueClient.GetQueueReference("bot-queue");
-           IActivity triggerEvent = context.Activity;
+        IActivity triggerEvent = context.Activity;
         //    var tMessage = JsonConvert.DeserializeObject<Message>(((JObject)triggerEvent.Value).GetValue("Message").ToString());
         //    var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
 
@@ -80,11 +80,10 @@ public class EchoDialog : IDialog<object>
                 RelatesTo = context.Activity.ToConversationReference(),
                 Text = $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9"
             };
-            var tableMessage = new MessageString
-            {
-                SerializedMessage = JsonConvert.SerializeObject(queueMessage),
-                IsActive = "Y"
-            };
+            var tableMessage = new MessageString(count++);
+
+            tableMessage.SerializedMessage = JsonConvert.SerializeObject(queueMessage);
+            tableMessage.IsActive = "Y";
 
             // write the queue Message to the queue
             //await AddMessageToQueueAsync(JsonConvert.SerializeObject(queueMessage));
@@ -98,7 +97,7 @@ public class EchoDialog : IDialog<object>
             await context.PostAsync($"Your time entries are submitted");
             context.Wait(MessageReceivedAsync);
         }
-        else if(message.Text.ToUpper() == "NO")
+        else if (message.Text.ToUpper() == "NO")
         {
             await context.PostAsync($"Please specify your time entries in valid format(WBS 9 0 8 8 9)");
             context.Wait(MessageReceivedAsync);
