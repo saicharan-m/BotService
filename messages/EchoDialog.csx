@@ -22,7 +22,6 @@ public class EchoDialog : IDialog<object>
 {
     protected int count = 1;
     private string ADMIN_USER_ID = $"29:1W-wNIQJyoFA5Nz6WBAojU5zpceYHsB96f8Kar20Ul6k";
-    var previousmessage = string.Empty;
     public Task StartAsync(IDialogContext context)
     {
         try
@@ -214,7 +213,7 @@ public class EchoDialog : IDialog<object>
         await trsTable.CreateIfNotExistsAsync();
 
         // Create a insert query
-        TableOperation insertOperation = TableOperation.Insert(myMessageTableEntity);
+        TableOperation insertOperation = TableOperation.Insert(mytrsTableEntity);
 
         // Execute the insert operation.
         await trsTable.ExecuteAsync(insertOperation);
