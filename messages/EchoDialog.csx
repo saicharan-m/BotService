@@ -102,8 +102,16 @@ public class EchoDialog : IDialog<object>
             tableMessage.IsActive = "Y";
             // write the queue Message to the queue
             //await AddMessageToQueueAsync(JsonConvert.SerializeObject(queueMessage));
-            await AddMessageToTableAsync(tableMessage);
-            await context.PostAsync($"Your subscription is saved");
+            try
+            {
+                await AddMessageToTableAsync(tableMessage);
+                await context.PostAsync($"Your subscription is saved");
+            }
+            catch(Exception ex)
+            {
+                await context.PostAsync($"Your have subscribed already");
+            }
+
             context.Wait(MessageReceivedAsync);
             //await context.PostAsync($"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9");
 
