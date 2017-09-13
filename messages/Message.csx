@@ -21,4 +21,5 @@ public class MessageString:TableEntity
         this.PartitionKey = "malineni";
         this.RowKey = key;
     }
+    public MessageString() { }
 }

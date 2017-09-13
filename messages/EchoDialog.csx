@@ -75,7 +75,7 @@ public class EchoDialog : IDialog<object>
 
                     var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
                     var triggerReply = messageactivity.CreateReply();
-                    triggerReply.Text = $"trigger! {message.Text}";
+                    triggerReply.Text = $"trigger! {tMessage.Text}";
                     await client.Conversations.ReplyToActivityAsync(triggerReply);
                 }
             } while (token != null);
@@ -186,39 +186,39 @@ public class EchoDialog : IDialog<object>
     }
 
 
-    public static async Task RetriveFromTableAsync(IDialogContext context)
-    {
-        // Retrieve storage account from connection string.
-        var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
+    //public static async Task RetriveFromTableAsync(IDialogContext context)
+    //{
+    //    // Retrieve storage account from connection string.
+    //    var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
-        // Create the table client.
-        var tableClient = storageAccount.CreateCloudTableClient();
+    //    // Create the table client.
+    //    var tableClient = storageAccount.CreateCloudTableClient();
 
-        // Retrieve a reference to a table.
-        CloudTable messageTable = tableClient.GetTableReference("messageTable");
-        // Construct the query operation for all customer entities where PartitionKey="Smith".
-        TableQuery<MessageString> query = new TableQuery<MessageString>()
-            .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "malineni"));
+    //    // Retrieve a reference to a table.
+    //    CloudTable messageTable = tableClient.GetTableReference("messageTable");
+    //    // Construct the query operation for all customer entities where PartitionKey="Smith".
+    //    TableQuery<MessageString> query = new TableQuery<MessageString>()
+    //        .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "malineni"));
 
-        // Print the fields for each customer.
-        TableContinuationToken token = null;
-        do
-        {
-            TableQuerySegment<MessageString> resultSegment = await messageTable.ExecuteQuerySegmentedAsync(query, token);
-            token = resultSegment.ContinuationToken;
+    //    // Print the fields for each customer.
+    //    TableContinuationToken token = null;
+    //    do
+    //    {
+    //        TableQuerySegment<MessageString> resultSegment = await messageTable.ExecuteQuerySegmentedAsync(query, token);
+    //        token = resultSegment.ContinuationToken;
 
-            foreach (MessageString entity in resultSegment.Results)
-            {
-                IActivity triggerEvent = context.Activity;
-                var tMessage = JsonConvert.DeserializeObject<Message>(entity.SerializedMessage);
-                var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
+    //        foreach (MessageString entity in resultSegment.Results)
+    //        {
+    //            IActivity triggerEvent = context.Activity;
+    //            var tMessage = JsonConvert.DeserializeObject<Message>(entity.SerializedMessage);
+    //            var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
 
-                var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
-                var triggerReply = messageactivity.CreateReply();
-                triggerReply.Text = $"trigger! {message.Text}";
-                await client.Conversations.ReplyToActivityAsync(triggerReply);
-            }
-        } while (token != null);
+    //            var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
+    //            var triggerReply = messageactivity.CreateReply();
+    //            triggerReply.Text = $"trigger! {message.Text}";
+    //            await client.Conversations.ReplyToActivityAsync(triggerReply);
+    //        }
+    //    } while (token != null);
 
-    }
+    //}
 }
