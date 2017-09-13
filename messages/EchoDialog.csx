@@ -242,7 +242,7 @@ public class EchoDialog : IDialog<object>
             // Create the Replace TableOperation.
             TableOperation updateOperation = TableOperation.Replace(updateEntity);
             // Execute the operation.
-            trsTable.Execute(updateOperation);
+            await trsTable.Execute(updateOperation);
             await context.PostAsync($"Your time entries are updated");
         }
         else
