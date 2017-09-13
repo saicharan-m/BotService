@@ -18,6 +18,7 @@ public class MessageString:TableEntity
     public string IsActive { get; set; }
     public MessageString(string key)
     {
+        this.PartitionKey = "malineni";
         this.RowKey = key;
     }
 }
