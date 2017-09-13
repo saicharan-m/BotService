@@ -242,8 +242,8 @@ public class EchoDialog : IDialog<object>
             // Create the Replace TableOperation.
             TableOperation updateOperation = TableOperation.Replace(updateEntity);
             // Execute the operation.
-            await trsTable.Execute(updateOperation);
-            await context.PostAsync($"Your time entries are updated");
+            await trsTable.ExecuteAsync(updateOperation);
+            //await context.PostAsync($"Your time entries are updated");
         }
         else
         {
@@ -262,7 +262,7 @@ public class EchoDialog : IDialog<object>
 
             // Execute the insert operation.
             await trsTable.ExecuteAsync(insertOperation);
-            await context.PostAsync($"Your time entries are submitted");
+            //await context.PostAsync($"Your time entries are submitted");
         }
     }
 }
