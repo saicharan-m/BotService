@@ -112,8 +112,14 @@ public class EchoDialog : IDialog<object>
         }
         else if (message.Text.ToUpper() == "YES")
         {
-            await AddTimeSheetToTableAsync($"R-0034567895-000010-01 9 9 9 9 9", context.Activity.ToConversationReference().User.Id);
-            await context.PostAsync($"Your time entries are submitted");
+            try
+            {
+                await AddTimeSheetToTableAsync($"R-0034567895-000010-01 9 9 9 9 9", context.Activity.ToConversationReference().User.Id);
+            }
+            catch (Exception)
+            {
+                await context.PostAsync($"Error occured while submitting Please update your time entries manually in SAP");
+            }
             context.Wait(MessageReceivedAsync);
         }
         else if (message.Text.ToUpper() == "NO")
@@ -123,8 +129,15 @@ public class EchoDialog : IDialog<object>
         }
         else if (Regex.IsMatch(message.Text.ToUpper(), @"R-[0-9]{10}-[0-9]{6}-[0-9]{2}\s[0-9]\s[0-9]\s[0-9]\s[0-9]\s[0-9]"))
         {
-            await AddTimeSheetToTableAsync(message.Text, context.Activity.ToConversationReference().User.Id);
-            await context.PostAsync($"Your time entries are submitted");
+            try
+            {
+                await AddTimeSheetToTableAsync(message.Text, context.Activity.ToConversationReference().User.Id);
+
+            }
+            catch (Exception)
+            {
+                await context.PostAsync($"Error occured while submitting Please update your time entries manually in SAP");
+            }
             context.Wait(MessageReceivedAsync);
         }
         else
@@ -189,17 +202,8 @@ public class EchoDialog : IDialog<object>
         await messageTable.ExecuteAsync(insertOperation);
     }
 
-    public static async Task AddTimeSheetToTableAsync(string message, string userId )
+    public static async Task AddTimeSheetToTableAsync(string message, string userId, IDialogContext context)
     {
-        var mytrsTableEntity = new TimesheetEntity(userId);
-        mytrsTableEntity.WBS = message.Substring(0, 22);
-        var dayHoursString = message.Substring(22);
-        var daysHours = dayHoursString.Split(' ');
-        mytrsTableEntity.Day1 = Convert.ToInt32(daysHours[0]);
-        mytrsTableEntity.Day2 = Convert.ToInt32(daysHours[1]);
-        mytrsTableEntity.Day3 = Convert.ToInt32(daysHours[2]);
-        mytrsTableEntity.Day4 = Convert.ToInt32(daysHours[3]);
-        mytrsTableEntity.Day5 = Convert.ToInt32(daysHours[4]);
         // Retrieve storage account from connection string.
         var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
@@ -212,11 +216,52 @@ public class EchoDialog : IDialog<object>
         // Create the queue if it doesn't already exist.
         await trsTable.CreateIfNotExistsAsync();
 
-        // Create a insert query
-        TableOperation insertOperation = TableOperation.Insert(mytrsTableEntity);
+        DateTime Firstday = dt.AddDays(-(int)dt.DayOfWeek);
+        DateTime Endaday = Firstday.AddDays(6);
 
-        // Execute the insert operation.
-        await trsTable.ExecuteAsync(insertOperation);
+        // Geting entry from table
+
+        TableOperation retrieveOperation = TableOperation.Retrieve<TimesheetEntity>(Endaday.ToShortDateString(), userId);
+
+        // Execute the retrieve operation.
+        TableResult retrievedResult = await peopleTable.ExecuteAsync(retrieveOperation);
+
+        // Print the phone number of the result.
+        if (retrievedResult.Result != null)
+        {
+            TimesheetEntity updateEntity = (TimesheetEntity)retrievedResult.Result;
+            updateEntity.WBS = message.Substring(0, 22);
+            var dayHoursString = message.Substring(22);
+            var daysHours = dayHoursString.Split(' ');
+            updateEntity.Day1 = Convert.ToInt32(daysHours[0]);
+            updateEntity.Day2 = Convert.ToInt32(daysHours[1]);
+            updateEntity.Day3 = Convert.ToInt32(daysHours[2]);
+            updateEntity.Day4 = Convert.ToInt32(daysHours[3]);
+            updateEntity.Day5 = Convert.ToInt32(daysHours[4]);
+            // Create the Replace TableOperation.
+            TableOperation updateOperation = TableOperation.Replace(updateEntity);
+            // Execute the operation.
+            trsTable.Execute(updateOperation);
+            await context.PostAsync($"Your time entries are updated");
+        }
+        else
+        {
+            var mytrsTableEntity = new TimesheetEntity(userId, Endaday.ToShortDateString());
+            mytrsTableEntity.WBS = message.Substring(0, 22);
+            var dayHoursString = message.Substring(22);
+            var daysHours = dayHoursString.Split(' ');
+            mytrsTableEntity.Day1 = Convert.ToInt32(daysHours[0]);
+            mytrsTableEntity.Day2 = Convert.ToInt32(daysHours[1]);
+            mytrsTableEntity.Day3 = Convert.ToInt32(daysHours[2]);
+            mytrsTableEntity.Day4 = Convert.ToInt32(daysHours[3]);
+            mytrsTableEntity.Day5 = Convert.ToInt32(daysHours[4]);
+
+            // Create a insert query
+            TableOperation insertOperation = TableOperation.Insert(mytrsTableEntity);
+
+            // Execute the insert operation.
+            await trsTable.ExecuteAsync(insertOperation);
+            await context.PostAsync($"Your time entries are submitted");
+        }
     }
-
 }

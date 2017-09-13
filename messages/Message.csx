@@ -32,10 +32,10 @@ public class TimesheetEntity : TableEntity
     public int Day3 { get; set; }
     public int Day4 { get; set; }
     public int Day5 { get; set; }
-    public TimesheetEntity(string key)
+    public TimesheetEntity(string rowKey,string partitionKey)
     {
-        this.PartitionKey = "timesheet";
-        this.RowKey = key;
+        this.PartitionKey = partitionKey;
+        this.RowKey = rowKey;
     }
     public TimesheetEntity() { }
 }
