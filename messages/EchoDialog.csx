@@ -100,7 +100,6 @@ public class EchoDialog : IDialog<object>
 
             tableMessage.SerializedMessage = JsonConvert.SerializeObject(queueMessage);
             tableMessage.IsActive = "Y";
-await context.PostAsync(tableMessage.SerializedMessage);
             // write the queue Message to the queue
             //await AddMessageToQueueAsync(JsonConvert.SerializeObject(queueMessage));
             await AddMessageToTableAsync(tableMessage);
