@@ -80,10 +80,15 @@ public class EchoDialog : IDialog<object>
                 RelatesTo = context.Activity.ToConversationReference(),
                 Text = $"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9"
             };
+            var tableMessage = new MessageString
+            {
+                SerializedMessage = JsonConvert.SerializeObject(queueMessage),
+                IsActive = "Y"
+            };
 
             // write the queue Message to the queue
             //await AddMessageToQueueAsync(JsonConvert.SerializeObject(queueMessage));
-            await AddMessageToTableAsync(queueMessage);
+            await AddMessageToTableAsync(tableMessage);
             //await context.PostAsync($"Do you want to submit your time sheets for this week as R-0034567895-000010-01 9 9 9 9 9");
             await context.PostAsync($"Your subscription is saved");
             context.Wait(MessageReceivedAsync);
@@ -144,7 +149,7 @@ public class EchoDialog : IDialog<object>
         await queue.AddMessageAsync(queuemessage);
     }
 
-    public static async Task AddMessageToTableAsync(Message myMessageTableEntity)
+    public static async Task AddMessageToTableAsync(MessageString myMessageTableEntity)
     {
         // Retrieve storage account from connection string.
         var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
