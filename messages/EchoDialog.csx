@@ -115,6 +115,7 @@ public class EchoDialog : IDialog<object>
             try
             {
                 await AddTimeSheetToTableAsync($"R-0034567895-000010-01 9 9 9 9 9", context.Activity.ToConversationReference().User.Id);
+                await context.PostAsync($"Updated");
             }
             catch (Exception er)
             {
@@ -132,7 +133,7 @@ public class EchoDialog : IDialog<object>
             try
             {
                 await AddTimeSheetToTableAsync(message.Text, context.Activity.ToConversationReference().User.Id);
-
+                await context.PostAsync($"Added");
             }
             catch (Exception ee)
             {
