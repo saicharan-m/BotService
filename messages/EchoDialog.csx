@@ -193,7 +193,7 @@ public class EchoDialog : IDialog<object>
     {
         var mytrsTableEntity = new TimesheetEntity(userId);
         mytrsTableEntity.WBS = message.Substring(0, 22);
-        var dayHoursString = message.Substring(21);
+        var dayHoursString = message.Substring(22);
         var daysHours = dayHoursString.Split(' ');
         mytrsTableEntity.Day1 = Convert.ToInt32(daysHours[0]);
         mytrsTableEntity.Day2 = Convert.ToInt32(daysHours[1]);
