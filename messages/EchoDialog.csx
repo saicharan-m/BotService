@@ -46,26 +46,42 @@ public class EchoDialog : IDialog<object>
         //var regX = new Regex(@"R-[0-9]{10}-[0-9]{6}-[0-9]{2}*");
 
         var message = await argument;
-        //if (message.Text.ToUpper().Contains("INTIATE FILLING"))
-        //{
-        //    var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
+        if (message.Text.ToUpper().Contains("INTIATE FILLING"))
+        {
+            // Retrieve storage account from connection string.
+            var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
-        //    // Create the queue client.
-        //    var queueClient = storageAccount.CreateCloudQueueClient();
+            // Create the table client.
+            var tableClient = storageAccount.CreateCloudTableClient();
 
-        //    // Retrieve a reference to a queue.
-        //    var queue = queueClient.GetQueueReference("bot-queue");
-        IActivity triggerEvent = context.Activity;
-        //    var tMessage = JsonConvert.DeserializeObject<Message>(((JObject)triggerEvent.Value).GetValue("Message").ToString());
-        //    var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
+            // Retrieve a reference to a table.
+            CloudTable messageTable = tableClient.GetTableReference("messageTable");
+            // Construct the query operation for all customer entities where PartitionKey="Smith".
+            TableQuery<MessageString> query = new TableQuery<MessageString>()
+                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "malineni"));
 
-        //    var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
-        //    var triggerReply = messageactivity.CreateReply();
-        //    triggerReply.Text = $"trigger! {message.Text}";
-        //    await client.Conversations.ReplyToActivityAsync(triggerReply);
-        //}
-        //else 
-        if (message.Text.ToUpper().Contains("HI"))
+            // Print the fields for each customer.
+            TableContinuationToken token = null;
+            do
+            {
+                TableQuerySegment<MessageString> resultSegment = await messageTable.ExecuteQuerySegmentedAsync(query, token);
+                token = resultSegment.ContinuationToken;
+
+                foreach (MessageString entity in resultSegment.Results)
+                {
+                    //IActivity triggerEvent = context.Activity;
+                    var tMessage = JsonConvert.DeserializeObject<Message>(entity.SerializedMessage);
+                    var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
+
+                    var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
+                    var triggerReply = messageactivity.CreateReply();
+                    triggerReply.Text = $"trigger! {message.Text}";
+                    await client.Conversations.ReplyToActivityAsync(triggerReply);
+                }
+            } while (token != null);
+
+        }
+        else if (message.Text.ToUpper().Contains("HI"))
         {
             //previousMessage = "HI";
             //PromptDialog.Confirm(
@@ -170,5 +186,39 @@ public class EchoDialog : IDialog<object>
     }
 
 
+    public static async Task RetriveFromTableAsync(IDialogContext context)
+    {
+        // Retrieve storage account from connection string.
+        var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
+        // Create the table client.
+        var tableClient = storageAccount.CreateCloudTableClient();
+
+        // Retrieve a reference to a table.
+        CloudTable messageTable = tableClient.GetTableReference("messageTable");
+        // Construct the query operation for all customer entities where PartitionKey="Smith".
+        TableQuery<MessageString> query = new TableQuery<MessageString>()
+            .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "malineni"));
+
+        // Print the fields for each customer.
+        TableContinuationToken token = null;
+        do
+        {
+            TableQuerySegment<MessageString> resultSegment = await messageTable.ExecuteQuerySegmentedAsync(query, token);
+            token = resultSegment.ContinuationToken;
+
+            foreach (MessageString entity in resultSegment.Results)
+            {
+                IActivity triggerEvent = context.Activity;
+                var tMessage = JsonConvert.DeserializeObject<Message>(entity.SerializedMessage);
+                var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
+
+                var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
+                var triggerReply = messageactivity.CreateReply();
+                triggerReply.Text = $"trigger! {message.Text}";
+                await client.Conversations.ReplyToActivityAsync(triggerReply);
+            }
+        } while (token != null);
+
+    }
 }
