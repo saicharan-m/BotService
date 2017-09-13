@@ -114,9 +114,9 @@ public class EchoDialog : IDialog<object>
         {
             try
             {
-                await AddTimeSheetToTableAsync($"R-0034567895-000010-01 9 9 9 9 9", context.Activity.ToConversationReference().User.Id,context);
+                await AddTimeSheetToTableAsync($"R-0034567895-000010-01 9 9 9 9 9", context.Activity.ToConversationReference().User.Id);
             }
-            catch (Exception)
+            catch (Exception er)
             {
                 await context.PostAsync($"Error occured while submitting Please update your time entries manually in SAP");
             }
@@ -131,10 +131,10 @@ public class EchoDialog : IDialog<object>
         {
             try
             {
-                await AddTimeSheetToTableAsync(message.Text, context.Activity.ToConversationReference().User.Id,context);
+                await AddTimeSheetToTableAsync(message.Text, context.Activity.ToConversationReference().User.Id);
 
             }
-            catch (Exception)
+            catch (Exception ee)
             {
                 await context.PostAsync($"Error occured while submitting Please update your time entries manually in SAP");
             }
@@ -202,7 +202,7 @@ public class EchoDialog : IDialog<object>
         await messageTable.ExecuteAsync(insertOperation);
     }
 
-    public static async Task AddTimeSheetToTableAsync(string message, string userId, IDialogContext context)
+    public static async Task AddTimeSheetToTableAsync(string message, string userId)
     {
         // Retrieve storage account from connection string.
         var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
@@ -240,7 +240,7 @@ public class EchoDialog : IDialog<object>
             updateEntity.Day4 = Convert.ToInt32(daysHours[3]);
             updateEntity.Day5 = Convert.ToInt32(daysHours[4]);
             // Create the Replace TableOperation.
-            TableOperation updateOperation = TableOperation.Replace(updateEntity);
+            TableOperation updateOperation = TableOperation.InsertOrReplace(updateEntity);
             // Execute the operation.
             await trsTable.ExecuteAsync(updateOperation);
             //await context.PostAsync($"Your time entries are updated");
