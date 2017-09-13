@@ -44,39 +44,47 @@ public class EchoDialog : IDialog<object>
     public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
     {
         var message = await argument;
-        if (message.Text.ToUpper().Contains("INITIATE FILLING") && context.Activity.ToConversationReference().User.Id == ADMIN_USER_ID)
+        if (message.Text.ToUpper().Contains("INITIATE FILLING"))
         {
-            // Retrieve storage account from connection string.
-            var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
-
-            // Create the table client.
-            var tableClient = storageAccount.CreateCloudTableClient();
-
-            // Retrieve a reference to a table.
-            CloudTable messageTable = tableClient.GetTableReference("messageTable");
-            // Construct the query operation for all users entities where PartitionKey="Smith".
-            TableQuery<MessageString> query = new TableQuery<MessageString>()
-                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "malineni"));
-
-            // Print the fields for each customer.
-            TableContinuationToken token = null;
-            do
+            if (context.Activity.ToConversationReference().User.Id == ADMIN_USER_ID)
             {
-                TableQuerySegment<MessageString> resultSegment = await messageTable.ExecuteQuerySegmentedAsync(query, token);
-                token = resultSegment.ContinuationToken;
+                // Retrieve storage account from connection string.
+                var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
-                foreach (MessageString entity in resultSegment.Results)
+                // Create the table client.
+                var tableClient = storageAccount.CreateCloudTableClient();
+
+                // Retrieve a reference to a table.
+                CloudTable messageTable = tableClient.GetTableReference("messageTable");
+                // Construct the query operation for all users entities where PartitionKey="Smith".
+                TableQuery<MessageString> query = new TableQuery<MessageString>()
+                    .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "malineni"));
+
+                // Print the fields for each customer.
+                TableContinuationToken token = null;
+                do
                 {
-                    //IActivity triggerEvent = context.Activity;
-                    var tMessage = JsonConvert.DeserializeObject<Message>(entity.SerializedMessage);
-                    var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
+                    TableQuerySegment<MessageString> resultSegment = await messageTable.ExecuteQuerySegmentedAsync(query, token);
+                    token = resultSegment.ContinuationToken;
 
-                    var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
-                    var triggerReply = messageactivity.CreateReply();
-                    triggerReply.Text = $"{tMessage.Text}";
-                    await client.Conversations.ReplyToActivityAsync(triggerReply);
-                }
-            } while (token != null);
+                    foreach (MessageString entity in resultSegment.Results)
+                    {
+                        //IActivity triggerEvent = context.Activity;
+                        var tMessage = JsonConvert.DeserializeObject<Message>(entity.SerializedMessage);
+                        var messageactivity = (Activity)tMessage.RelatesTo.GetPostToBotMessage();
+
+                        var client = new ConnectorClient(new Uri(messageactivity.ServiceUrl));
+                        var triggerReply = messageactivity.CreateReply();
+                        triggerReply.Text = $"{tMessage.Text}";
+                        await client.Conversations.ReplyToActivityAsync(triggerReply);
+                    }
+                } while (token != null);
+            }
+            else
+            {
+                await context.PostAsync($"Your are not authorised to intiate the filling process");
+                context.Wait(MessageReceivedAsync);
+            }
 
         }
         else if (message.Text.ToUpper().Contains("HI"))
@@ -89,7 +97,7 @@ public class EchoDialog : IDialog<object>
             var tableMessage = new MessageString(context.Activity.ToConversationReference().User.Id);
 
             tableMessage.SerializedMessage = JsonConvert.SerializeObject(queueMessage);
-            tableMessage.IsActive = "Y";           
+            tableMessage.IsActive = "Y";
             try
             {
                 //rite the message to table
