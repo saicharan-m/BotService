@@ -166,8 +166,6 @@ public class EchoDialog : IDialog<object>
 
     public static async Task AddMessageToTableAsync(MessageString myMessageTableEntity)
     {
-        try
-        {
             // Retrieve storage account from connection string.
             var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
