@@ -222,47 +222,51 @@ public class EchoDialog : IDialog<object>
 
         // Geting entry from table
 
-        TableOperation retrieveOperation = TableOperation.Retrieve<TimesheetEntity>(Endaday.ToShortDateString(), userId);
+        //TableOperation retrieveOperation = TableOperation.Retrieve<TimesheetEntity>(Endaday.ToShortDateString().ToString(), userId);
 
-        // Execute the retrieve operation.
-        TableResult retrievedResult = await trsTable.ExecuteAsync(retrieveOperation);
+        //// Execute the retrieve operation.
+        //TableResult retrievedResult = await trsTable.ExecuteAsync(retrieveOperation);
 
-        // Print the phone number of the result.
-        if (retrievedResult.Result != null)
-        {
-            TimesheetEntity updateEntity = (TimesheetEntity)retrievedResult.Result;
-            updateEntity.WBS = message.Substring(0, 22);
-            var dayHoursString = message.Substring(22);
-            var daysHours = dayHoursString.Split(' ');
-            updateEntity.Day1 = Convert.ToInt32(daysHours[0]);
-            updateEntity.Day2 = Convert.ToInt32(daysHours[1]);
-            updateEntity.Day3 = Convert.ToInt32(daysHours[2]);
-            updateEntity.Day4 = Convert.ToInt32(daysHours[3]);
-            updateEntity.Day5 = Convert.ToInt32(daysHours[4]);
-            // Create the Replace TableOperation.
-            TableOperation updateOperation = TableOperation.InsertOrReplace(updateEntity);
-            // Execute the operation.
-            await trsTable.ExecuteAsync(updateOperation);
-            //await context.PostAsync($"Your time entries are updated");
-        }
-        else
-        {
-            var mytrsTableEntity = new TimesheetEntity(userId, Endaday.ToShortDateString());
-            mytrsTableEntity.WBS = message.Substring(0, 22);
-            var dayHoursString = message.Substring(22);
-            var daysHours = dayHoursString.Split(' ');
-            mytrsTableEntity.Day1 = Convert.ToInt32(daysHours[0]);
-            mytrsTableEntity.Day2 = Convert.ToInt32(daysHours[1]);
-            mytrsTableEntity.Day3 = Convert.ToInt32(daysHours[2]);
-            mytrsTableEntity.Day4 = Convert.ToInt32(daysHours[3]);
-            mytrsTableEntity.Day5 = Convert.ToInt32(daysHours[4]);
+        //// Print the phone number of the result.
+        //if (retrievedResult.Result != null)
+        //{
+        //    TimesheetEntity updateEntity = (TimesheetEntity)retrievedResult.Result;
+        //    if(updateEntity != null)
+        //    {
+        //        updateEntity.WBS = message.Substring(0, 22);
+        //        var dayHoursString = message.Substring(22);
+        //        var daysHours = dayHoursString.Split(' ');
+        //        updateEntity.Day1 = Convert.ToInt32(daysHours[0]);
+        //        updateEntity.Day2 = Convert.ToInt32(daysHours[1]);
+        //        updateEntity.Day3 = Convert.ToInt32(daysHours[2]);
+        //        updateEntity.Day4 = Convert.ToInt32(daysHours[3]);
+        //        updateEntity.Day5 = Convert.ToInt32(daysHours[4]);
+        //        // Create the Replace TableOperation.
+        //        TableOperation updateOperation = TableOperation.InsertOrReplace(updateEntity);
+        //        // Execute the operation.
+        //        await trsTable.ExecuteAsync(updateOperation);
+        //    }
 
-            // Create a insert query
-            TableOperation insertOperation = TableOperation.Insert(mytrsTableEntity);
+        //    //await context.PostAsync($"Your time entries are updated");
+        //}
+        //else
+        //{
+        var mytrsTableEntity = new TimesheetEntity(userId, Endaday.ToShortDateString());
+        mytrsTableEntity.WBS = message.Substring(0, 22);
+        var dayHoursString = message.Substring(22);
+        var daysHours = dayHoursString.Split(' ');
+        mytrsTableEntity.Day1 = Convert.ToInt32(daysHours[0]);
+        mytrsTableEntity.Day2 = Convert.ToInt32(daysHours[1]);
+        mytrsTableEntity.Day3 = Convert.ToInt32(daysHours[2]);
+        mytrsTableEntity.Day4 = Convert.ToInt32(daysHours[3]);
+        mytrsTableEntity.Day5 = Convert.ToInt32(daysHours[4]);
 
-            // Execute the insert operation.
-            await trsTable.ExecuteAsync(insertOperation);
-            //await context.PostAsync($"Your time entries are submitted");
-        }
+        // Create a insert query
+        TableOperation insertOperation = TableOperation.Insert(mytrsTableEntity);
+
+        // Execute the insert operation.
+        await trsTable.ExecuteAsync(insertOperation);
+        //await context.PostAsync($"Your time entries are submitted");
+        //}
     }
 }
