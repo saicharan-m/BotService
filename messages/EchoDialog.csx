@@ -46,8 +46,8 @@ public class EchoDialog : IDialog<object>
         var message = await argument;
         if (message.Text.ToUpper().Contains("INITIATE FILLING"))
         {
-            if (context.Activity.ToConversationReference().User.Id == ADMIN_USER_ID)
-            {
+            //if (context.Activity.ToConversationReference().User.Id == ADMIN_USER_ID)
+            //{
                 // Retrieve storage account from connection string.
                 var storageAccount = CloudStorageAccount.Parse(Utils.GetAppSetting("AzureWebJobsStorage"));
 
@@ -79,12 +79,12 @@ public class EchoDialog : IDialog<object>
                         await client.Conversations.ReplyToActivityAsync(triggerReply);
                     }
                 } while (token != null);
-            }
-            else
-            {
-                await context.PostAsync($"Your are not authorised to intiate the filling process");
-                context.Wait(MessageReceivedAsync);
-            }
+           // }
+            //else
+           // {
+               // await context.PostAsync($"Your are not authorised to intiate the filling process");
+               // context.Wait(MessageReceivedAsync);
+           // }
 
         }
         else if (message.Text.ToUpper().Contains("HI"))
