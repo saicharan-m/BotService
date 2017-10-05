@@ -111,17 +111,17 @@ public class EchoDialog : IDialog<object>
 
             context.Wait(MessageReceivedAsync);
         }
-        else if (message.Text.ToUpper() == "YES")
+        else if (message.Text.ToUpper().Contains("YES"))
         {
             await context.PostAsync($"Your time entries are submitted");
             context.Wait(MessageReceivedAsync);
         }
-        else if (message.Text.ToUpper() == "NO")
+        else if (message.Text.ToUpper().Contains("NO"))
         {
             await context.PostAsync($"Please specify your time entries in valid format(WBS 9 0 8 8 9)");
             context.Wait(MessageReceivedAsync);
         }
-        else if (Regex.IsMatch(message.Text.ToUpper(), @"R-[0-9]{10}-[0-9]{6}-[0-9]{2}\s[0-9]\s[0-9]\s[0-9]\s[0-9]\s[0-9]"))
+        else if (Regex.IsMatch(message.Text.ToUpper(), @".?R-[0-9]{10}-[0-9]{6}-[0-9]{2}\s[0-9]\s[0-9]\s[0-9]\s[0-9]\s[0-9].?"))
         {
             await context.PostAsync($"Your time entries are submitted");
             context.Wait(MessageReceivedAsync);
