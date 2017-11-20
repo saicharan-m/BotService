@@ -28,6 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "messages", "messages\messag
 		messages\function.json = messages\function.json
 		messages\project.json = messages\project.json
 		messages\project.lock.json = messages\project.lock.json
+		messages\Message.csx = messages\Message.csx
 		messages\run.csx = messages\run.csx
 	EndProjectSection
 EndProject
